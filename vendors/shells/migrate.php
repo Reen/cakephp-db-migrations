@@ -1326,6 +1326,10 @@ class MigrateShell extends Shell
         if (!$this->_loadDbConfig()) exit;
 
         $config = $this->DbConfig->{$this->dataSource};
+		if(isset($config['prefix']) && $config['prefix'] != '') {
+			$this->_usePrefix = true;
+			$this->schema_table = $config['prefix'].$this->schema_table;
+		}
         $dsn = array(
             'phptype'   =>  $config['driver'],
             'username'  =>  $config['login'],
