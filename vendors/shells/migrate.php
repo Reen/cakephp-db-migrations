@@ -17,7 +17,7 @@
 */
 
 App::import('Core', array('file', 'folder'));
-App::import('Vendor', 'Yaml');
+App::import('Vendor', 'Migrations.Yaml', true, array(), 'Yaml.php');
 
 class MigrateShell extends Shell
 {
@@ -1648,5 +1648,3 @@ function is_assoc_array($array)
     }
     return false;
 }
-
-?>
