@@ -706,7 +706,7 @@ class MigrateShell extends Shell
         return $this->_array2Sql($array[$direction]);
     }
 
-    function _getProperties($props)
+    function _getProperties($props, $add_type = true)
     {
         $_props = array();
         if (!is_array($props)) $props = array($props);
@@ -758,7 +758,7 @@ class MigrateShell extends Shell
                 $_props[$key] = $prop;
             }
         }
-        if (!array_key_exists('type', $_props)) $_props['type'] = 'string';
+        if ($add_type && !array_key_exists('type', $_props)) $_props['type'] = 'string';
         return $_props;
     }
 
@@ -1166,9 +1166,11 @@ class MigrateShell extends Shell
                         $Npks = array();
 
                         foreach($fields as $field=>$props) {
+                            $index_change_only = false;
+                            if(count($props) === 1 && count(array_intersect(array('index', 'unique', 'primary'), array_keys($props))) === 1) $index_change_only = true;
                             $this->out("      > altering column '$field' on '$table'");
                       
-                            $props = $this->_getProperties($props);
+                            $props = $this->_getProperties($props, false);
                             $rfields = array();
                       
                             if (!isset($props['type'])) {
@@ -1176,6 +1178,7 @@ class MigrateShell extends Shell
                                 if (PEAR::isError($r)) $this->err($r->getDebugInfo());
                                 $props['type'] = $r[0]['mdb2type'];
                                 if (!isset($props['length'])) $props['length'] = $r[0]['length'];
+                                if (!isset($props['notnull'])) $props['notnull'] = $r[0]['notnull'];
                             }
                         
                             $props['type'] = isset($props['type']) ? $props['type'] : 'string';
@@ -1204,7 +1207,7 @@ class MigrateShell extends Shell
                             if (isset($props['unique']) && $props['unique'] === false) $Nuniques[] = $field;
                             if (isset($props['primary']) && $props['primary'] === false) $Npks[] = $field;
                         
-                            $change[$field]['definition'] = $rfields;
+                            if (!$index_change_only) $change[$field]['definition'] = $rfields;
                         }
                     
                         $r = $this->_db->alterTable($table, array('change'=>$change), false);
