@@ -1177,7 +1177,7 @@ class MigrateShell extends Shell
                                 $r = $this->_db->getTableFieldDefinition($table, $field);
                                 if (PEAR::isError($r)) $this->err($r->getDebugInfo());
                                 $props['type'] = $r[0]['mdb2type'];
-                                if (!isset($props['length'])) $props['length'] = $r[0]['length'];
+                                if (!isset($props['length']) && isset($r[0]['length'])) $props['length'] = $r[0]['length'];
                                 if (!isset($props['notnull'])) $props['notnull'] = $r[0]['notnull'];
                             }
                         
