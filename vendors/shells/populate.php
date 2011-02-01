@@ -153,7 +153,7 @@ class PopulateShell extends Shell
             foreach ($records as $i => $record) {
                 foreach ($record as $key => $val) {
                     $class = Inflector::classify($key);
-                    if ($val == '.RANDOM') {
+                    if ($val === '.RANDOM') {
                         if (isset($this->data[$class])) {
                             $this->data[$name][$i][$key . '_id'] = $this->data[$class][array_rand($this->data[$class])]['id'];
                             unset($this->data[$name][$i][$key]);
@@ -168,7 +168,7 @@ class PopulateShell extends Shell
                 }
             }
         }
-        
+
         foreach ($this->data as $name => $records) {
             $this->$name->deleteAll(array('1=1'), false);
             $this->out("Populating model '" . $name . "' ...", false);
