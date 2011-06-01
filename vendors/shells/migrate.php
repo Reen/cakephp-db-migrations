@@ -1376,6 +1376,7 @@ class MigrateShell extends Shell
         $this->_db->loadModule('Manager');
         $this->_db->loadModule('Extended');
         $this->_db->loadModule('Reverse');
+        $this->_db->setOption('quote_identifier', true);
         if (isset($config['encoding'])) {
             $this->_db->setCharset($config['encoding']);
         }
