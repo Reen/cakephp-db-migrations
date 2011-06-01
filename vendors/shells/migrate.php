@@ -1375,7 +1375,10 @@ class MigrateShell extends Shell
         $this->_db->setFetchMode(MDB2_FETCHMODE_ASSOC);
         $this->_db->loadModule('Manager');
         $this->_db->loadModule('Extended');
-        $this->_db->loadModule('Reverse');  
+        $this->_db->loadModule('Reverse');
+        if (isset($config['encoding'])) {
+            $this->_db->setCharset($config['encoding']);
+        }
     }
 
     function _getMigrations()
